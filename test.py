@@ -1,4 +1,5 @@
 import yt_dlp
+import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 
@@ -17,11 +18,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+            info = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(info)
 
-        await update.message.reply_audio(open("audio.mp3", "rb"))
+        await update.message.reply_audio(open(filename, "rb"))
+
+        os.remove(filename)
 
     except Exception as e:
+        print(e)
         await update.message.reply_text("صار خطأ")
 
 app = ApplicationBuilder().token(TOKEN).build()
