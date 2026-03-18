@@ -44,9 +44,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         ydl_opts = {
-            "format": "bestaudio[ext=m4a]/bestaudio/best",
-            "extractaudio": True,
-            "audioformat": "mp3",
+            "format": "bestaudio/best",
             "outtmpl": "audio.%(ext)s",
             "quiet": True,
             "noplaylist": True,
@@ -55,11 +53,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "http_headers": {
                 "User-Agent": "Mozilla/5.0",
             },
-            "postprocessors": [{
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "192",
-            }],
         }
 
         if os.path.exists("cookies.txt"):
@@ -74,10 +67,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 video = info
 
             filename = ydl.prepare_filename(video)
-
-            mp3_filename = os.path.splitext(filename)[0] + ".mp3"
-            if os.path.exists(mp3_filename):
-                filename = mp3_filename
 
         if not filename or not os.path.exists(filename):
             await wait_msg.edit_text("صار خطأ بالتحميل")
