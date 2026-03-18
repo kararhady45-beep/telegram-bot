@@ -3,7 +3,7 @@ import yt_dlp
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 
-# حط توكن البوت هنا 
+# حط توكن البوت هنا
 TOKEN = "8096135136:AAF86cgGs6p8Rb2ugJu7WWNnhF2UzJxSYPw"
 
 
@@ -125,5 +125,5 @@ def main():
     app.run_polling(drop_pending_updates=True, close_loop=False)
 
 
-if name == "__main__":
+if __name__ == "__main__":
     main()
