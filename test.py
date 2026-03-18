@@ -3,7 +3,6 @@ import yt_dlp
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 
-# حط توكن البوت هنا
 TOKEN = "8096135136:AAF86cgGs6p8Rb2ugJu7WWNnhF2UzJxSYPw"
 
 
@@ -45,7 +44,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         ydl_opts = {
-            "format": "bestaudio/best",
+            "format": "bestaudio[ext=m4a]/bestaudio/best",
             "extractaudio": True,
             "audioformat": "mp3",
             "outtmpl": "audio.%(ext)s",
@@ -76,7 +75,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             filename = ydl.prepare_filename(video)
 
-            # إذا تحول الى mp3 بعد المعالجة
             mp3_filename = os.path.splitext(filename)[0] + ".mp3"
             if os.path.exists(mp3_filename):
                 filename = mp3_filename
