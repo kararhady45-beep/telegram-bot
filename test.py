@@ -45,7 +45,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         ydl_opts = {
-            "format": "bestaudio/best",
+            "format": "bestaudio",
+            "extractaudio": True,
+            "audioformat": "mp3",
             "outtmpl": "audio.%(ext)s",
             "quiet": True,
             "noplaylist": True,
