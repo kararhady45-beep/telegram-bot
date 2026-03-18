@@ -10,8 +10,9 @@ TOKEN = "8096135136:AAF86cgGs6p8Rb2ugJu7WWNnhF2UzJxSYPw"
 async def post_init(application):
     try:
         await application.bot.delete_webhook(drop_pending_updates=True)
-    except:
-        pass
+        print("Webhook deleted successfully")
+    except Exception as e:
+        print(f"Webhook delete error: {e}")
 
 
 def get_performer(video_info: dict) -> str:
@@ -38,7 +39,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("اكتب اسم الاغنية بعد يوت")
         return
 
-    msg = await update.message.reply_text("🔍 جاري البحث...")
+    wait_msg = await update.message.reply_text("🔍 جاري البحث...")
 
     filename = None
 
@@ -66,7 +67,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             filename = ydl.prepare_filename(video)
 
         if not filename or not os.path.exists(filename):
-            await msg.edit_text("فشل التحميل")
+            await wait_msg.edit_text("صار خطأ بالتحميل")
             return
 
         title = (video.get("title") or "Unknown")[:64]
@@ -81,16 +82,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 duration=duration,
             )
 
-        await msg.delete()
+        await wait_msg.delete()
 
     except Exception as e:
-        await msg.edit_text("❌ صار خطأ")
+        print("ERROR:", repr(e))
+        await wait_msg.edit_text(f"❌ الخطأ:\n{str(e)[:2000]}")
 
     finally:
         if filename and os.path.exists(filename):
             try:
                 os.remove(filename)
-            except:
+            except Exception:
                 pass
 
 
@@ -103,7 +105,9 @@ def main():
     )
 
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
-    app.run_polling()
+
+    print("Bot running...")
+    app.run_polling(drop_pending_updates=True, close_loop=False)
 
 
 if __name__ == "__main__":
